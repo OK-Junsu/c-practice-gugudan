@@ -42,6 +42,10 @@
 *.idb
 *.pdb
 
+# Debug folders
+Debug/
+x64/
+
 # Kernel Module Compile Results
 *.mod*
 *.cmd
@@ -53,3 +57,9 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+## Visual Studio
+.vs/
+
+# User-specific files
+*.user
