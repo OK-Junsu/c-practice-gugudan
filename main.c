@@ -1,38 +1,103 @@
-#define _CRT_SECURE_NO_WARNINGS // scanf 에러 방지
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <windows.h>
+
+void clearInputBuffer();
+int getValidInput();
+void printVisualizationBar(int count);
+void printMultiplicationTable(int dan);
 
 int main() {
-	// 콘솔 출력 인코딩을 UTF-8로 변경하는 명령어 실행
-	system("chcp 65001");
-	system("cls"); // 인코딩 변경 메시지를 지우기 위해 화면 초기화
+    system("chcp 65001");
+    system("cls");
 
-	int dan;
-	int i;
+    while (1) {
+        int dan = getValidInput();
+        
+        if (dan == -1) {
+            continue;
+        }
+        
+        if (dan == 0) {
+            printf("프로그램을 종료합니다.\n");
+            break;
+        }
+        
+        printMultiplicationTable(dan);
+    }
 
-	// 프로그램을 계속 반복하기 위한 무한 루프
-	while (1) {
-		printf("정수를 입력하세요 (1~9, 종료하려면 0 입력): ");
-		scanf("%d", &dan);
+    return 0;
+}
 
-		// 종료 조건 (사용자가 0을 입력하면 프로그램 종료)
-		if (dan == 0) {
-			printf("프로그램을 종료합니다.\n");
-			break;
-		}
+void clearInputBuffer() {
+    while (_kbhit()) {
+        _getch();
+    }
+}
 
-		// 1부터 9 사이의 숫자인지 확인
-		if (dan < 1 || dan > 9) {
-			printf("1에서 9 사이의 정수를 입력해 주세요.\n\n");
-			continue; // 다시 입력 단계로 돌아감
-		}
+int getValidInput() {
+    char input;
+    int dan;
+    
+    clearInputBuffer();
+    
+    printf("\n[ 구구단 시각화 모드 ]\n");
+    printf("출력할 단을 입력하세요 (1~9, 종료는 0): ");
+    
+    input = _getche();
+    printf("\n");
+    
+    if (input < '0' || input > '9') {
+        printf("⚠️ 숫자만 입력 가능합니다. 다시 입력해주세요.\n");
+        return -1;
+    }
+    
+    dan = input - '0';
+    
+    if (dan != 0 && (dan < 1 || dan > 9)) {
+        printf("⚠️ 1에서 9 사이의 숫자만 가능합니다.\n");
+        return -1;
+    }
+    
+    return dan;
+}
 
-		// 구구단 출력 루프
-		printf("--- %d단 ---\n", dan);
-		for (i = 1; i <= 9; i++) {
-			printf("%d x %d = %d\n", dan, i, dan * i);
-		}
-		printf("------------\n\n");
-	}
+void printVisualizationBar(int count) {
+    printf("| ");
+    fflush(stdout);
+    
+    for (int i = 0; i < count / 2; i++) {
+        printf("■");
+        fflush(stdout);
+        Sleep(30);
+    }
+    printf("\n");
+}
 
-	return 0;
+void printMultiplicationTable(int dan) {
+    int sum = 0;
+    
+    printf("\n▶ %d단 출력을 시작합니다!\n", dan);
+    Sleep(500);
+    printf("--------------------------------------------\n");
+    Sleep(200);
+    
+    for (int i = 1; i <= 9; i++) {
+        int result = dan * i;
+        sum += result;
+        
+        printf("\033[1;33m%d x %d = %2d\033[0m  ", dan, i, result);
+        fflush(stdout);
+        Sleep(100);
+        
+        printVisualizationBar(result);
+        Sleep(200);
+    }
+    
+    printf("--------------------------------------------\n");
+    Sleep(300);
+    printf("✅ %d단의 결과값 총합: \033[1;32m%d\033[0m\n", dan, sum);
+    printf("--------------------------------------------\n");
 }
